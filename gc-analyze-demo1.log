@@ -1,0 +1,51 @@
+Java HotSpot(TM) 64-Bit Server VM (25.241-b07) for windows-amd64 JRE (1.8.0_241-b07), built on Dec 11 2019 10:21:40 by "rejava" with MS VC++ 10.0 (VS2010)
+Memory: 4k page, physical 16658152k(7282980k free), swap 19148520k(4782216k free)
+CommandLine flags: -XX:InitialHeapSize=10485760 -XX:MaxHeapSize=10485760 -XX:MaxNewSize=5242880 -XX:NewSize=5242880 -XX:OldPLABSize=16 -XX:PretenureSizeThreshold=10485760 -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:SurvivorRatio=8 -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:-UseLargePagesIndividualAllocation -XX:+UseParNewGC 
+0.341: [GC (Allocation Failure) 0.342: [ParNew: 3081K->512K(4608K), 0.0036127 secs] 3081K->1751K(9728K), 0.0038503 secs] [Times: user=0.02 sys=0.00, real=0.00 secs] 
+0.346: [GC (Allocation Failure) 0.346: [ParNew: 2679K->96K(4608K), 0.0013645 secs] 3919K->1846K(9728K), 0.0014097 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Heap
+ par new generation   total 4608K, used 2230K [0x00000000ff600000, 0x00000000ffb00000, 0x00000000ffb00000)
+  eden space 4096K,  52% used [0x00000000ff600000, 0x00000000ff8159a0, 0x00000000ffa00000)
+  from space 512K,  18% used [0x00000000ffa00000, 0x00000000ffa18250, 0x00000000ffa80000)
+  to   space 512K,   0% used [0x00000000ffa80000, 0x00000000ffa80000, 0x00000000ffb00000)
+ concurrent mark-sweep generation total 5120K, used 1750K [0x00000000ffb00000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 3236K, capacity 4496K, committed 4864K, reserved 1056768K
+  class space    used 350K, capacity 388K, committed 512K, reserved 1048576K
+
+
+手动设置的JVM参数：-XX:NewSize=5242880 -XX:MaxNewSize=5242880 -XX:InitialHeapSize=10485760 -XX:MaxHeapSize=10485760 -XX:SurvivorRatio=8 -XX:PretenureSizeThreshold=10485760 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
+analyze:
+----------------------------------------------------------------------------------------------------------
+CommandLine flags： JVM详细参数
+GC (Allocation Failure)：发送GC的原因——Allocation Failure 对象分配失败
+0.341: GC反生的时间，即系统运行0.341秒后发生的 
+
+[ParNew: 3081K->512K(4608K), 0.0036127 secs]
+-------------------------------------------------------------------------
+	ParNew： 执行的是Young GC，垃圾回收器是ParNew
+	3081K->512K(4608K)：年轻代可用空间为4608K(4.5M，Eden+一个Survivor区)，GC前使用了3081K，GC后只有512K对象存活下来
+	0.0036127 secs：耗时
+	
+3081K->1751K(9728K), 0.0038503 secs ： 描述的是整个堆内存的情况
+--------------------------------------------------------------------------
+	9728K：堆内存总可用空间（9.5MB），即年轻代4.5M+老年代5M
+	3081K：GC前堆内存使用了3081K
+	1751K：GC后堆内存使用了1751K
+
+[Times: user=0.02 sys=0.00, real=0.00 secs]：本次GC消耗时间
+
+Heap 后面的信息为JVM退出是打印出来的当前堆内存的使用情况
+---------------------------------------------------------------------------
+	par new generation total 4608K, used 2230K ：“ParNew”垃圾回收器负责的年轻代总共有4608KB（4.5MB）可用内存，目前是使用了2230KB（2.5MB，包括eden和s1中使用的内存）。
+	eden space 4096K,  52% used：eden区4096K(4MB)内存，被使用了52%
+	from space 512K,  18% used：from survivor区512K内存中，被使用了18%	
+	concurrent mark-sweep generation total 5120K, used 1750K：CMS管理的老年代内存空间一共5120KB(5MB)，使用了1750KB
+	Metaspace 和 class space：元数据空间和Class空间，存放一些类信息、常量池之类的东西，此时的使用情况
+	
+	
+	
+	
+	
+	
+	
+	
