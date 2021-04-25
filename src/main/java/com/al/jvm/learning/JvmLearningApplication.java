@@ -1,4 +1,4 @@
-package com.example.jvmlearning;
+package com.al.jvm.learning;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

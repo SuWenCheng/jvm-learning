@@ -1,4 +1,4 @@
-package com.example.jvmlearning;
+package com.al.jvm.learning;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
